@@ -8,20 +8,36 @@ class Problem1
 
 // 과제1
 class KStack<T> (){
-    var stack: ArrayList<T> = arrayListOf<T>()
+    // private + MutableList형으로
+    private val stack: MutableList<T>
+
+    /**
+     * MutableList vs List
+     *
+     ** MutableList
+     * val mutableList = mutableListOf<Int>()
+     * mutableList.add(1)
+     * mutableList.removeLast()
+
+     ** List
+     * val list = listOf<Int>()
+     * list.add(1) // add 불가능
+     * list.removeLast() // remove 불가능
+
+     * val listInit = listOf<Int>(1, 2, 3, 4, 5)
+     */
 
     fun push(element: T){
         stack.add(element)
     }
 
     fun pop(): ArrayList<T> {
-        stack.removeAt(stack.size-1)
-        return stack
+        // stack의 가장 마지막 요소를 빼서 반환
+        return stack.removeLast()
     }
 
-    fun size(): Int {
-        return stack.size
-    }
+    // more simple
+    fun size() = stack.size
 
     fun find(element: T): Boolean {
         return stack.contains(element)
@@ -75,7 +91,7 @@ fun main() {
         }
 
         // vps.size가 왼쪽과 오른쪽 괄호 수의 차이이므로 0일 때만 vps 인정
-        if (vps.size() != 0) {
+        if (vps.isNotEmpty()) { // isNotEmpty 활용
             println("NO")
             continue
         } else {

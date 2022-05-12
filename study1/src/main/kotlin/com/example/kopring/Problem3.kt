@@ -13,15 +13,16 @@ data class Product(val name: String, val price: Int)
 class Receipt(val products: List<Product>){
 
     fun printReceipt() {
-        var total: Int = 0
+        //var total: Int = 0
 
         this.products.map {
             println("${it.name} ${it.price}원")
-            total += it.price
+            //total += it.price
         }
 
         println("====================")
-        println("총합 ${total}원")
+        // sumOf 함수 활용
+        println("총합 ${products.sumOf { it.price }}원")
     }
 }
 
