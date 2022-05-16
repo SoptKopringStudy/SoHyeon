@@ -2,6 +2,7 @@ package com.sohyeon.kopring.controller
 
 import com.sohyeon.kopring.entity.HomeworkUser
 import com.sohyeon.kopring.dto.HomeworkUserDto
+import com.sohyeon.kopring.entity.BaseResponse
 import com.sohyeon.kopring.service.HomeworkService
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
@@ -22,21 +23,30 @@ class HomeworkController(
     fun getAllUsers() = homeworkService.getAllUser()
 
     @GetMapping("/name/{name}")
-    fun getUserByName(@PathVariable("name") name: String): String {
+    fun getUserByName(@PathVariable("name") name: String): BaseResponse<String> {
         homeworkService.getUserByName(name)
-                .onSuccess { return it }
-                .onFailure { return it.message ?: "해당 유저가 없습니다." }
+                .onSuccess { return BaseResponse.success<String>(it) }
+                .onFailure { return BaseResponse.failure(it.message ?: "해당 유저가 없습니다.") }
         throw RuntimeException("Unreachable Code")
     }
+
+    /**
+     * {
+     *      status: 200
+     *      success: true
+     *      data : {
+     *                 "김소현"
+     *             }
+     */
 
     @GetMapping("/info")
     fun getUserByInfo(
             @RequestParam("name") name: String,
             @RequestParam("part") part: String
-    ): String {
+    ): BaseResponse<String> {
         homeworkService.getUserByInfo(name, part)
-                .onSuccess { return it }
-                .onFailure { return it.message ?: "해당 유저가 없습니다." }
+                .onSuccess { return BaseResponse.success<String>(it) }
+                .onFailure { return BaseResponse.failure(it.message ?: "해당 유저가 없습니다.") }
         throw RuntimeException("Unreachable Code")
     }
 
@@ -44,18 +54,18 @@ class HomeworkController(
     fun registerUser(@RequestBody userDto: HomeworkUserDto): HomeworkUser = homeworkService.registerUser(userDto)
 
     @PutMapping("")
-    fun putUser(@RequestBody user: HomeworkUser): String {
+    fun putUser(@RequestBody user: HomeworkUser): BaseResponse<String> {
         homeworkService.putUser(user)
-                .onSuccess { return it }
-                .onFailure { return it.message ?: "유저 수정 실패" }
+                .onSuccess { return BaseResponse.success<String>(it) }
+                .onFailure { return BaseResponse.failure(it.message ?: "수정 실패") }
         throw RuntimeException("Unreachable Code")
     }
 
     @DeleteMapping("/{id}")
-    fun deleteUser(@PathVariable("id") id: Int): String {
+    fun deleteUser(@PathVariable("id") id: Int): BaseResponse<String> {
         homeworkService.deleteUser(id)
-                .onSuccess { return it }
-                .onFailure { return it.message ?: "유저 삭제 실패" }
+                .onSuccess { return BaseResponse.success<String>(it) }
+                .onFailure { return BaseResponse.failure(it.message ?: "삭제 실패") }
         throw RuntimeException("Unreachable Code")
     }
 }
