@@ -1,5 +1,7 @@
-package com.sohyeon.kopring.assignment1
+package com.sohyeon.kopring.controller
 
+import com.sohyeon.kopring.entity.HomeworkUser
+import com.sohyeon.kopring.dto.HomeworkUserDto
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
@@ -12,8 +14,8 @@ import org.springframework.web.bind.annotation.RestController
 
 @RequestMapping("/user")
 @RestController
-class Week1Controller {
-    private val userList: MutableList<Week1User> = mutableListOf()
+class HomeworkController {
+    private val userList: MutableList<HomeworkUser> = mutableListOf()
 
     @GetMapping("")
     fun getAllUsers() =
@@ -39,14 +41,14 @@ class Week1Controller {
     }
 
     @PostMapping("")
-    fun registerUser(@RequestBody userDto: Week1UserDto): Week1User {
+    fun registerUser(@RequestBody userDto: HomeworkUserDto): HomeworkUser {
         val user = userDto.toUser(userList.size)
         userList.add(user)
         return user
     }
 
     @PutMapping("")
-    fun putUser(@RequestBody week1User: Week1User) {
+    fun putUser(@RequestBody week1User: HomeworkUser) {
         val putIndex = userList.indexOfFirst { it.id == week1User.id }
         if(putIndex != -1) userList[putIndex] = week1User
     }
