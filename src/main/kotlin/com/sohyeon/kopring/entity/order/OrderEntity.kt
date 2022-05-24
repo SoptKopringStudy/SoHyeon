@@ -8,8 +8,8 @@ class OrderEntity (
         @Id
         @GeneratedValue(strategy = GenerationType.IDENTITY)
         val id: Long = 0,
-        @Column(name="product") val product: String = "",
-        @Column(name = "price") val price: Int = 0
+        @Column(name="product") var product: String = "",
+        @Column(name = "price") var price: Int = 0
         ) {
 
     // 빈 생성자

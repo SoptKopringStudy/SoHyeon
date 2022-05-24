@@ -9,6 +9,6 @@ interface OrderService {
     fun getProductByName(product: String): Result<String>
     fun getProductByInfo(product: String, price: Int): Result<String>
     fun registerOrder(orderDto: OrderDto): OrderEntity
-    fun putOrder(orderEntity: OrderEntity): Result<String>
-    fun deleteOrder(id: Int): Result<String>
+    fun putOrder(id: Long, orderDto: OrderDto): String
+    fun deleteOrder(id: Long): Boolean
 }

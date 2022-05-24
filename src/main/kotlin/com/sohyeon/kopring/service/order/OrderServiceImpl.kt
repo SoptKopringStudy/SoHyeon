@@ -4,6 +4,7 @@ import com.sohyeon.kopring.dto.order.OrderDto
 import com.sohyeon.kopring.entity.order.OrderEntity
 import com.sohyeon.kopring.repository.order.OrderRepository
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 
 @Service
 class OrderServiceImpl(
@@ -22,7 +23,7 @@ class OrderServiceImpl(
 
     // 파라미터로 정보 가져오기
     override fun getProductByName(product: String): Result<String> {
-        return when (val order = orderList.find { it.isProductSame(product) }) {
+        return when (val order = repository.findOrderEntityByProduct(product)) {
             null -> Result.failure(IllegalStateException("${product}가 없습니다."))
             else -> Result.success(order.getInfo())
         }
@@ -30,35 +31,45 @@ class OrderServiceImpl(
 
     // 상품명+가격으로 정보 가져오기
     override fun getProductByInfo(product: String, price: Int): Result<String> {
-        return when (val product = orderList.find { it.isOrderInfo(product, price) }) {
+        return when (repository.findOrderEntityByProductAndPrice(product, price)) {
             null -> Result.failure(IllegalStateException("상품 조회 실패"))
-            else -> Result.success("${price}원인 ${product}이 존재합니다.")
+            else -> Result.success("${price}원인 ${product}(이)가 존재합니다.")
         }
     }
 
     // [POST] 데이터 insert
+    @Transactional
     override fun registerOrder(orderDto: OrderDto): OrderEntity {
-        val order = orderDto.toOrder(orderList.size)
-        orderList.add(order) // insert
+        val order = orderDto.toOrder()
+        repository.save(order)
 
         return order
     }
 
     // [PUT] 데이터 update
-    override fun putOrder(orderEntity: OrderEntity): Result<String> {
-        return when (val order = orderList.find { it.isIdEqual(orderEntity.id) }) {
-            null -> Result.failure(IllegalStateException("수정 실패"))
-            else -> Result.success("수정 성공")
+    @Transactional
+    override fun putOrder(id: Long, orderDto: OrderDto): String {
+        return when (val orderResult = repository.findOrderEntityById(id)) {
+            null -> {
+                repository.save(orderDto.toOrder())
+                "${orderDto.price} 등록 성공"
+            }
+            else -> {
+                orderResult.product = orderDto.product
+                orderResult.price = orderDto.price
+                "${orderDto.product} 수정 성공"
+            }
         }
     }
 
     // [DELETE] 데이터 delete
-    override fun deleteOrder(id: Int): Result<String> {
-        return when (val order = orderList.find { it.isIdEqual((id.toLong())) }) {
-            null -> Result.failure(IllegalStateException("삭제 실패"))
+    @Transactional
+    override fun deleteOrder(id: Long): Boolean {
+        return when (repository.findOrderEntityById(id)) {
+            null -> false
             else -> {
-                orderList.removeIf { it.isIdEqual(id.toLong()) }
-                Result.success("삭제 성공")
+                repository.deleteOrderEntityById(id)
+                true
             }
         }
     }

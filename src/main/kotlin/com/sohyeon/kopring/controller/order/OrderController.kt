@@ -44,19 +44,9 @@ class OrderController(
     @PostMapping("")
     fun registerOrder(@RequestBody orderDto: OrderDto): OrderEntity = orderService.registerOrder(orderDto)
 
-    @PutMapping("")
-    fun putOrder(@RequestBody orderEntity: OrderEntity): BaseResponse<String> {
-        orderService.putOrder(orderEntity)
-                .onSuccess { return BaseResponse.success<String>(it) }
-                .onFailure { return BaseResponse.failure(it.message ?: "수정 실패") }
-        throw RuntimeException("Unreachable Code")
-    }
+    @PutMapping("/{id}")
+    fun putOrder(@PathVariable("id") id: Long, @RequestBody orderDto: OrderDto) = orderService.putOrder(id, orderDto)
 
     @DeleteMapping("/{id}")
-    fun deleteOrder(@PathVariable("id") id: Int): BaseResponse<String> {
-        orderService.deleteOrder(id)
-                .onSuccess { return BaseResponse.success(it) }
-                .onFailure { return BaseResponse.failure(it.message ?: "삭제 실패") }
-        throw java.lang.RuntimeException("Unreachable Code")
-    }
+    fun deleteOrder(@PathVariable("id") id: Long) = orderService.deleteOrder(id)
 }

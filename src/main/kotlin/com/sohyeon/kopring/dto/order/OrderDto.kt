@@ -6,8 +6,7 @@ data class OrderDto(
         val product: String,
         val price: Int
 ) {
-    fun toOrder(id: Int) = OrderEntity (
-            id = id.toLong(),
+    fun toOrder() = OrderEntity (
             product = product,
             price = price
             )
